@@ -473,11 +473,25 @@ namespace DotNetPlugin
                                             }
 
 
-                                            properties[paramName] = new
+                                            if (param.ParameterType.IsArray)
                                             {
-                                                type = paramType,
-                                                description = paramdescription
-                                            };
+                                                var elementType = param.ParameterType.GetElementType();
+                                                string elementSchemaType = GetJsonSchemaType(elementType);
+                                                properties[paramName] = new
+                                                {
+                                                    type = "array",
+                                                    items = new { type = elementSchemaType },
+                                                    description = paramdescription
+                                                };
+                                            }
+                                            else
+                                            {
+                                                properties[paramName] = new
+                                                {
+                                                    type = paramType,
+                                                    description = paramdescription
+                                                };
+                                            }
                                                 
 
                                             if (!param.IsOptional)
